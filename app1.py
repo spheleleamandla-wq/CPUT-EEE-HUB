@@ -21,6 +21,49 @@ subject = st.sidebar.selectbox(
     "📚 Select Subject",
     ["🏠 Home", "📊 GPA Calculator", "📐 Mathematics", "⚡ Electrical Principles"]
 )
+# DATA FOLDER FOR STREAMLIT CLOUD - THIS IS THE KEY FIX
+DATA_DIR = pathlib.Path("data")
+DATA_DIR.mkdir(exist_ok=True)
+
+USER_FILE = DATA_DIR / "cput_users.json"
+HISTORY_FILE = DATA_DIR / "cput_history.json"
+EQU_FILE = DATA_DIR / "cput_equations.json"
+ASSIGN_FILE = DATA_DIR / "cput_assignments.json"
+GRADES_FILE = DATA_DIR / "cput_grades.json"
+ADMIN_PASSWORD = "CPUTadmin2026!"
+
+CPUT_COURSES = ["Electrical Engineering - ND", "Electrical Engineering - BEngTech", "Mechanical Engineering - ND", "Information Technology", "Civil Engineering - ND", "Chemical Engineering", "Computer Engineering"]
+
+st.markdown(f"""<style>
+.stApp{{background:#F0F2F6;}}
+.stButton>button{{background:{CPUT_BLUE};color:white;border-radius:8px;border:none;padding:10px 20px;font-weight:bold;}}
+.header{{display:flex;align-items:center;background:linear-gradient(90deg, {CPUT_BLUE}, #004a99);padding:15px;border-radius:12px;}}
+.header h1{{color:white;margin-left:20px;font-size:26px;margin-bottom:0;}}
+.header p{{color:{CPUT_GOLD};margin-left:20px;margin-top:0;}}
+.profile-pic{{border-radius:50%;border:3px solid {CPUT_GOLD};}}
+</style>""", unsafe_allow_html=True)
+
+st.markdown(f"""<div class="header"><div><h1>{APP_NAME}</h1>{APP_NAME}</h1><p>{APP_SUB}</p></div></div>""", unsafe_allow_html=True)
+st.caption(DEVELOPER)
+
+def load(f):
+    return json.load(open(f)) if os.path.exists(f) else {}
+def save(f,d):
+    json.dump(d, open(f,"w"))
+
+users, history, saved_equations, assignments, grades = load(USER_FILE), load(HISTORY_FILE), load(EQU_FILE), load(ASSIGN_FILE), load(GRADES_FILE)
+
+if 'logged_in' not in st.session_state: st.session_state.logged_in, st.session_state.email = False, ""
+
+def check_password(password):
+    return len(password) >= 10 and re.search(r'[A-Z]', password) and re.search(r'[0-9]', password) and re.search(r'[!@#$%^&*]', password)
+
+def add_history(email, subject, calc, res):
+    if email not in history: history[email]=[]
+    history[email].append({"time":datetime.now().strftime("%Y-%m-%d %H:%M"),"subject":subject,"calc":calc,"result":res}); save(HISTORY_FILE,history)
+
+def logout(): st.session_state.logged_in=False; st.session_state.email=""; st.rerun()
+
 
 # 1. HOME
 if subject == "🏠 Home":
