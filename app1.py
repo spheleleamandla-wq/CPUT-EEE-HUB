@@ -25,7 +25,7 @@ subject = st.sidebar.selectbox(
 # 1. HOME
 if subject == "🏠 Home":
     st.title("Welcome Future Engineer 👷‍♀️")
-    st.write("This app has ALL CPUT EE modules in one place.")
+    st.write("Your CPUT EE modules in one place.")
     st.write("Start with Level 1 and work your way up.")
 
 # 2. MATHEMATICS - FULLY CODED
